@@ -5,143 +5,312 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corazón en Gratitud - Diario de Fe</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        #reto-amor-container { font-family: 'Inter', sans-serif; line-height: 1.5; }
-        .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
-        @keyframes heart-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        :root {
+            --rose-primary: #e11d48;
+            --rose-light: #fff1f2;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .script { font-family: 'Dancing Script', cursive; }
+        
+        .progress-ring__circle { 
+            transition: stroke-dashoffset 0.6s ease-in-out; 
+            transform: rotate(-90deg); 
+            transform-origin: 50% 50%; 
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .animate-heart { animation: heart-beat 2s infinite ease-in-out; }
+        @keyframes heart-beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* Estilos para impresión del certificado */
+        @media print {
+            .no-print { display: none !important; }
+            #certificate-overlay { position: relative !important; display: block !important; padding: 0 !important; }
+            #certificate-section { 
+                border: 20px solid #fecdd3 !important; 
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                visibility: visible !important;
+            }
+            #certificate-section * { visibility: visible !important; }
+        }
+
+        .scroll-custom::-webkit-scrollbar { width: 6px; }
+        .scroll-custom::-webkit-scrollbar-track { background: transparent; }
+        .scroll-custom::-webkit-scrollbar-thumb { background: #fecdd3; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-rose-50">
-    <div id="reto-amor-container" class="text-slate-800 pb-20">
-        <nav class="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm">
-            <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="bg-rose-500 p-2 rounded-xl text-white shadow-md shadow-rose-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-black text-rose-900 leading-none">Corazón en Gratitud</h1>
-                        <p class="text-[10px] sm:text-xs font-bold text-rose-400 uppercase tracking-widest mt-1">El Diario de Su Gracia</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div id="progress-text" class="text-sm font-black text-rose-900 hidden sm:block">0%</div>
-                    <div class="relative w-12 h-12">
-                        <svg class="w-full h-full" viewBox="0 0 100 100">
-                            <circle class="text-rose-100 stroke-current" stroke-width="10" fill="transparent" r="40" cx="50" cy="50"/>
-                            <circle id="progress-circle" class="text-rose-500 stroke-current progress-ring__circle" stroke-width="10" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
-                        </svg>
-                    </div>
+<body class="text-slate-800 antialiased">
+    
+    <!-- PANTALLA DE INICIO: REGISTRO DE NOMBRE -->
+    <div id="welcome-screen" class="fixed inset-0 z-[1000] bg-rose-50 flex items-center justify-center p-6 hidden">
+        <div class="bg-white rounded-[3rem] p-10 max-w-lg w-full text-center shadow-2xl border border-rose-100 fade-in">
+            <div class="mb-8">
+                <div class="bg-rose-500 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-rose-200 rotate-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                 </div>
             </div>
-        </nav>
+            <h1 class="serif text-4xl text-rose-900 mb-3">Tu Diario de Fe</h1>
+            <p class="text-slate-500 mb-8 leading-relaxed">Bienvenido a esta travesía de 40 días. <br>Para comenzar, escribe tu nombre tal como quieres que aparezca en tu certificado final.</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="user-name-field" placeholder="Escribe tu nombre aquí..." 
+                    class="w-full px-8 py-5 rounded-3xl border-2 border-rose-50 focus:border-rose-500 focus:outline-none text-center text-xl font-bold text-rose-900 shadow-inner">
+                <button onclick="handleStartReto()" 
+                    class="w-full bg-rose-600 hover:bg-rose-700 text-white py-5 rounded-3xl font-black text-lg shadow-xl shadow-rose-200 transition-all active:scale-95">
+                    EMPEZAR EL RETO
+                </button>
+            </div>
+            <p class="text-[10px] text-rose-400 mt-6 uppercase font-bold tracking-tighter italic">"El amor nunca deja de ser" — 1 Corintios 13:8</p>
+        </div>
+    </div>
 
-        <main class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <aside class="lg:col-span-4 order-2 lg:order-1">
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
-                    <h2 class="font-bold text-rose-900 mb-6">40 Días de Bendición</h2>
-                    <div id="day-grid" class="grid grid-cols-5 gap-2"></div>
+    <!-- APLICACIÓN PRINCIPAL -->
+    <div id="app-content" class="min-h-screen opacity-0 transition-opacity duration-700">
+        
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md border-b border-rose-100 sticky top-0 z-[500] no-print">
+            <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:block text-rose-500 animate-heart">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <div>
+                        <h2 class="serif text-xl font-bold text-rose-950 leading-none">Corazón en Gratitud</h2>
+                        <p id="nav-user-welcome" class="text-[10px] font-bold text-rose-400 uppercase tracking-widest mt-1"></p>
+                    </div>
                 </div>
-            </aside>
 
-            <section class="lg:col-span-8 order-1 lg:order-2">
-                <div id="challenge-card" class="bg-white rounded-[2rem] p-8 shadow-md border border-rose-100 relative overflow-hidden min-h-[500px] flex flex-col">
-                    <div class="relative z-10 flex flex-col h-full">
-                        <div id="active-day-label" class="inline-block bg-rose-100 text-rose-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">Día 1</div>
-                        <h2 id="active-day-title" class="text-4xl font-black text-rose-900 mb-6 tracking-tight"></h2>
-                        <div class="bg-rose-50 rounded-2xl p-6 mb-4 border border-rose-100/50"><p id="active-day-desc" class="text-lg text-slate-700"></p></div>
-                        <div class="bg-amber-50 rounded-2xl p-6 mb-8 border border-amber-100 italic text-slate-700 shadow-inner"><p id="active-day-encouragement"></p></div>
-                        <div class="flex flex-wrap items-center justify-between gap-4 mt-auto">
-                            <span id="active-day-verse" class="text-rose-500 font-bold italic"></span>
-                            <button id="toggle-btn" class="bg-rose-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all active:scale-95">Marcar como Hecho</button>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span id="progress-percent" class="text-lg font-black text-rose-900 block leading-none">0%</span>
+                        <span class="text-[10px] uppercase font-bold text-slate-400">Progreso de Fe</span>
+                    </div>
+                    <div class="relative w-14 h-14">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle class="text-rose-50 stroke-current" stroke-width="8" fill="transparent" r="42" cx="50" cy="50"/>
+                            <circle id="progress-ring" class="text-rose-500 stroke-current progress-ring__circle" stroke-width="8" stroke-linecap="round" fill="transparent" r="42" cx="50" cy="50" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-rose-900">
+                            <span id="completed-count">0</span>/40
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-between mt-6">
-                    <button id="prev-btn" class="p-4 bg-white rounded-2xl border border-rose-100 font-bold">Anterior</button>
-                    <button id="next-btn" class="p-4 bg-white rounded-2xl border border-rose-100 font-bold">Siguiente</button>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 no-print">
+            
+            <!-- Sidebar -->
+            <aside class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-rose-100">
+                    <h3 class="serif text-xl text-rose-900 mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Camino de Bendición
+                    </h3>
+                    <div id="day-selector-grid" class="grid grid-cols-5 gap-3"></div>
+
+                    <div id="unlock-cert-area" class="mt-8 p-6 bg-rose-900 rounded-3xl text-white hidden fade-in">
+                        <p class="text-xs font-bold uppercase tracking-widest mb-2 text-rose-300">¡Reto Completado!</p>
+                        <h4 class="serif text-lg mb-4">Tu Certificado está listo</h4>
+                        <button onclick="handleOpenCertificate()" class="w-full bg-white text-rose-900 py-3 rounded-2xl font-black text-sm hover:bg-rose-50 transition-all text-xs">VISUALIZAR DIPLOMA</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- El Desafío Activo -->
+            <section class="lg:col-span-8">
+                <div id="day-card" class="bg-white rounded-[3rem] p-10 md:p-14 shadow-xl shadow-rose-100/50 border border-rose-100 relative overflow-hidden flex flex-col min-h-[600px] fade-in">
+                    <div class="absolute -top-20 -right-20 text-rose-50 opacity-40">
+                        <svg width="300" height="300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+
+                    <div class="relative z-10">
+                        <div id="current-day-badge" class="inline-block bg-rose-100 text-rose-600 px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6">DÍA 1</div>
+                        <h2 id="current-day-title" class="serif text-5xl text-rose-950 mb-10 tracking-tight"></h2>
+                        
+                        <div class="space-y-8 mb-12">
+                            <div class="bg-rose-50/50 rounded-3xl p-8 border border-rose-100/50">
+                                <h4 class="text-rose-800 font-bold mb-3 uppercase text-xs tracking-widest flex items-center gap-2">El Desafío de Amor</h4>
+                                <p id="current-day-desc" class="text-xl text-slate-700 leading-relaxed font-medium"></p>
+                            </div>
+                            <div class="bg-amber-50 rounded-3xl p-8 border border-amber-100 shadow-inner">
+                                <h4 class="text-amber-700 font-bold mb-3 uppercase text-xs tracking-widest flex items-center gap-2 text-[10px]">Palabra de Ánimo y Fe</h4>
+                                <p id="current-day-faith" class="text-slate-700 leading-relaxed italic text-sm"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-6 mt-auto">
+                            <div class="flex items-center gap-3 text-rose-500 bg-rose-50 px-5 py-3 rounded-2xl border border-rose-100/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M9 18h6"/></svg>
+                                <span id="current-day-verse" class="font-black italic text-sm"></span>
+                            </div>
+                            <button id="main-toggle-btn" class="bg-rose-600 hover:bg-rose-700 text-white px-10 py-5 rounded-3xl font-black shadow-xl shadow-rose-200 transition-all active:scale-95 flex items-center gap-3 text-lg">
+                                <span id="btn-text">Marcar como Hecho</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button id="nav-prev" class="flex items-center gap-2 font-bold text-slate-400 hover:text-rose-600 transition-colors py-2 px-4">Anterior</button>
+                    <button id="nav-next" class="flex items-center gap-2 font-bold text-slate-400 hover:text-rose-600 transition-colors py-2 px-4">Siguiente</button>
                 </div>
             </section>
         </main>
 
-        <div id="celebration-modal" class="fixed inset-0 z-[100] bg-rose-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-            <div class="bg-white rounded-[3rem] p-8 max-w-lg w-full text-center shadow-2xl relative">
-                <h3 class="text-3xl font-black text-rose-900 mb-4">¡Reto Completado!</h3>
-                <p id="celebration-text" class="text-slate-600 mb-8"></p>
-                <button onclick="closeModal()" class="w-full bg-rose-600 text-white py-4 rounded-2xl font-bold">Amén, gracias Señor.</button>
+        <!-- SECCIÓN CERTIFICADO FINAL -->
+        <div id="certificate-overlay" class="fixed inset-0 z-[2000] bg-white hidden overflow-y-auto">
+            <div class="max-w-5xl mx-auto py-10 px-6">
+                <div class="flex justify-between items-center mb-10 no-print">
+                    <button onclick="handleCloseCertificate()" class="text-rose-600 font-black flex items-center gap-2 underline uppercase text-xs">VOLVER AL DIARIO</button>
+                    <button onclick="window.print()" class="bg-rose-600 text-white px-10 py-4 rounded-3xl font-black shadow-xl flex items-center gap-2">IMPRIMIR CERTIFICADO</button>
+                </div>
+
+                <div id="certificate-section" class="bg-white p-12 sm:p-20 border-[20px] border-rose-100 relative shadow-2xl overflow-hidden text-center min-h-[800px] flex flex-col justify-center">
+                    <div class="relative z-10">
+                        <div class="mb-10 text-rose-500">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="currentColor" class="mx-auto"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        </div>
+                        <h3 class="text-rose-500 font-bold tracking-[0.5em] uppercase text-xs mb-6">Certificado de Propósito</h3>
+                        <h1 class="serif text-7xl text-rose-950 mb-12">El Reto del Amor</h1>
+                        <p class="text-xl text-slate-600 mb-14 italic max-w-2xl mx-auto">"Este documento certifica un compromiso sagrado ante Dios para cultivar el amor, habiendo completado los 40 días de transformación."</p>
+                        <div class="mb-16">
+                            <p id="cert-final-name" class="script text-7xl text-rose-800 border-b-2 border-slate-200 pb-4 inline-block px-10"></p>
+                            <p class="text-slate-400 text-sm uppercase tracking-widest mt-4 font-bold">Corazón Comprometido</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-10 mb-16 max-w-2xl mx-auto border-t border-slate-100 pt-10">
+                            <div><p class="serif text-xl text-rose-900 font-bold">Fecha de Inicio</p><p id="cert-final-date" class="text-slate-500 mt-2 font-mono"></p></div>
+                            <div><p class="serif text-xl text-rose-900 font-bold">Estado</p><p class="text-slate-500 mt-2 italic">Restaurado con Fe</p></div>
+                        </div>
+                        <div class="pt-10 border-t-2 border-rose-50 max-w-xl mx-auto">
+                            <p class="serif text-2xl text-rose-950 italic">"El amor todo lo sufre, todo lo cree, todo lo espera, todo lo soporta."</p>
+                            <p class="text-rose-400 font-black mt-4 text-lg">— 1 Corintios 13:7</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Celebración Final -->
+        <div id="final-modal" class="fixed inset-0 z-[3000] bg-rose-950/90 backdrop-blur-xl flex items-center justify-center p-6 hidden no-print">
+            <div class="bg-white rounded-[4rem] p-12 max-w-xl w-full text-center shadow-2xl relative overflow-hidden">
+                <h2 class="serif text-3xl text-rose-950 mb-4">¡Pacto Renovado!</h2>
+                <p id="celebration-msg" class="text-slate-600 mb-10 text-lg leading-relaxed"></p>
+                <div class="space-y-4">
+                    <button onclick="handleOpenCertificate()" class="w-full bg-rose-600 text-white py-5 rounded-[2rem] font-black text-lg shadow-xl shadow-rose-200">VER MI CERTIFICADO</button>
+                    <button onclick="closeModal('final-modal')" class="w-full bg-rose-50 text-rose-600 py-4 rounded-[2rem] font-bold">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         const challenges = [
-            { id: 1, title: "Paciencia", description: "No digas nada negativo a tu cónyuge. Si surge la tentación, elige no decir nada.", verse: "1 Corintios 13:4", encouragement: "La paciencia es el amor en reposo. Dios te dará la calma cuando sientas que vas a estallar." },
-            { id: 2, title: "Amabilidad", description: "Realiza al menos un gesto inesperado de amabilidad además de no decir nada negativo.", verse: "Efesios 4:32", encouragement: "Ser amable es reflejar el corazón de Cristo. Un pequeño acto hoy puede sanar una herida de ayer." },
-            { id: 3, title: "Inversión", description: "Cómprale algo que le comunique: 'Hoy estuve pensando en ti'.", verse: "Romanos 12:10", encouragement: "El amor invierte tiempo y energía. Hoy tú siembras en tu matrimonio." },
-            { id: 4, title: "Contacto", description: "Ponte en contacto con tu cónyuge sin otra intención que preguntar cómo está.", verse: "Salmos 139:17", encouragement: "Tu interés genuino es un bálsamo. Recuerda que Dios está pendiente de cada uno de tus suspiros." },
-            { id: 5, title: "Humildad", description: "Pide que te diga tres cosas que le incomodan de ti. Escucha sin justificarte.", verse: "Proverbios 27:14", encouragement: "La humildad abre puertas que el orgullo cierra. Dios defiende tu hogar cuando bajas tus defensas." },
-            { id: 6, title: "Control de la Ira", description: "Frente a las circunstancias difíciles, decide reaccionar con amor en lugar de irritación.", verse: "Proverbios 16:32", encouragement: "Gobernar tu espíritu es una victoria espiritual. No dejes que el enojo le robe el lugar al Espíritu Santo." },
-            { id: 7, title: "Atributos Positivos", description: "Escribe cualidades positivas de tu cónyuge y elogia una hoy mismo.", verse: "1 Corintios 13", encouragement: "Enfocarte en lo bueno es un acto de fe. Dios ve el potencial en ti, haz lo mismo con tu pareja." },
-            { id: 8, title: "Sin Celos", description: "Celebra los éxitos de tu cónyuge y quema la lista de atributos negativos.", verse: "1 Corintios 13", encouragement: "Al quemar lo negativo, liberas espacio para que Dios escriba una nueva historia." },
-            { id: 9, title: "El Saludo", description: "Saluda a tu cónyuge con una sonrisa y entusiasmo de forma especial.", verse: "1 Pedro 5:14", encouragement: "Haz que tu hogar sea el lugar donde más deseen estar." },
-            { id: 10, title: "Amor Incondicional", description: "Haz algo fuera de lo común para servirle (lavar el auto, limpiar la cocina) por pura decisión.", verse: "Romanos 5:8", encouragement: "Amar sin condiciones es la forma más pura de imitar a Dios." },
-            { id: 11, title: "Valorar", description: "Realiza un gesto que diga 'Te Valoro' con una sonrisa genuina.", verse: "Efesios 5:28", encouragement: "Tu pareja es un regalo del cielo. Valórala hoy como el tesoro que Dios puso en tus manos." },
-            { id: 12, title: "Ceder", description: "Decide de buen modo ceder en un área de desacuerdo. Pon sus preferencias primero.", verse: "Filipenses 2:4", encouragement: "Ceder no es perder, es ganar paz. El que se humilla será exaltado por la gracia del Señor." },
-            { id: 13, title: "Pelear Limpio", description: "Establece reglas saludables para disentir con dignidad y respeto.", verse: "Marcos 3:25", encouragement: "La unidad es poder. Protege la paz de tu hogar como un guerrero de Dios." },
-            { id: 14, title: "Deleite", description: "Deja de lado una actividad habitual para pasar tiempo de calidad juntos.", verse: "Eclesiastés 9:9", encouragement: "Dios creó el matrimonio para el gozo. Disfruta la vida con la persona que Él eligió para ti." },
-            { id: 15, title: "Honor", description: "Demuestra respeto y honor de una manera especial hoy.", verse: "1 Pedro 3:7", encouragement: "Honrar a tu cónyuge es honrar el diseño de Dios." },
-            { id: 16, title: "Intercesión", description: "Ora específicamente por tres áreas de la vida de tu pareja.", verse: "3 Juan 1:2", encouragement: "La oración mueve la mano de Dios. Eres el intercesor principal de tu matrimonio." },
-            { id: 17, title: "Intimidad", description: "Protege los secretos de tu cónyuge y escúchalo hasta que se sienta seguro.", verse: "1 Corintios 13", encouragement: "Sé el refugio que Dios usa para consolar a tu pareja." },
-            { id: 18, title: "Comprensión", description: "Prepara una cena especial en casa para conocer mejor los anhelos de tu pareja.", verse: "Proverbios 24:3", encouragement: "Con sabiduría se edifica la casa." },
-            { id: 19, title: "Amor de Dios", description: "Reflexiona sobre cómo el amor de Dios es tu fuente inagotable.", verse: "1 Juan 4:7", encouragement: "Llénate del amor de Dios para que desborde hacia tu matrimonio." },
-            { id: 20, title: "Jesucristo", description: "Confía en Cristo como el salvador y centro de tu unión.", verse: "Romanos 5:6", encouragement: "Con Jesús en la barca, ninguna tormenta podrá hundir tu matrimonio." },
-            { id: 21, title: "Saciedad en Dios", description: "Aparta tiempo para la lectura bíblica y oración personal.", verse: "Isaías 58:11", encouragement: "Tu plenitud viene de Dios, no de tu pareja." },
-            { id: 22, title: "Fidelidad", description: "Comprométete a amar incluso si hoy no te sientes correspondido.", verse: "Oseas 2:20", encouragement: "La fidelidad es una decisión, no un sentimiento." },
-            { id: 23, title: "Protección", description: "Identifica y quita cualquier influencia externa dañina para la relación.", verse: "1 Corintios 13:7", encouragement: "Pon una valla de oración alrededor de tu hogar." },
-            { id: 24, title: "Contra la Lujuria", description: "Elimina cualquier distracción que compita con tu cónyuge.", verse: "1 Juan 2:17", encouragement: "Pide a Dios un corazón íntegro." },
-            { id: 25, title: "Perdón", description: "Elige perdonar hoy cualquier deuda o herida del pasado.", verse: "2 Corintios 2:10", encouragement: "El perdón te libera a ti. Dios ya te perdonó; extiende esa gracia." },
-            { id: 26, title: "Responsabilidad", description: "Confiésale tus faltas a tu pareja con humildad pidiendo perdón.", verse: "Romanos 2:1", encouragement: "La confesión trae sanidad." },
-            { id: 27, title: "Aliento", description: "Sustituye las expectativas poco realistas por palabras que edifiquen.", verse: "Salmos 25:20", encouragement: "Tus palabras tienen poder de vida." },
-            { id: 28, title: "Sacrificio", description: "Haz un sacrificio personal para bendecir a tu pareja en su mayor necesidad.", verse: "1 Juan 3:16", encouragement: "Dios ve tu entrega y multiplicará tu bendición." },
-            { id: 29, title: "Motivación", description: "Sirve con alegría y di 'Te amo' de manera tangible.", verse: "Efesios 6:7", encouragement: "Tu servicio es un acto de adoración." },
-            { id: 30, title: "Unidad", description: "Busca a Dios juntos para fortalecer el vínculo y resolver divisiones.", verse: "Juan 17:11", encouragement: "Cordón de tres dobleces no se rompe fácilmente." },
-            { id: 31, title: "Dejar y Unirse", description: "Reafirma que tu matrimonio es tu prioridad sobre toda otra relación.", verse: "Génesis 2:24", encouragement: "Estás diseñando un legado." },
-            { id: 32, title: "Sexualidad", description: "Busca la pureza y el deleite en la unión sagrada.", verse: "1 Corintios 7:3", encouragement: "La intimidad es un regalo sagrado." },
-            { id: 33, title: "Completar", description: "Incluye a tu pareja en tus decisiones y pide su consejo.", verse: "Eclesiastés 4:11", encouragement: "La sabiduría compartida es una doble bendición." },
-            { id: 34, title: "Celebrar la Piedad", description: "Elogia su carácter cristiano cuando haga lo correcto ante Dios.", verse: "1 Corintios 13:6", encouragement: "Celebrar su fe es la mejor manera de verla crecer." },
-            { id: 35, title: "Rendir Cuentas", description: "Busca sabiduría en mentores cristianos para tu matrimonio.", verse: "Proverbios 15:22", encouragement: "Rodéate de personas que amen a Dios." },
-            { id: 36, title: "Palabra de Dios", description: "Comprométete a leer la Biblia diariamente para guiar tu camino.", verse: "Salmos 119:105", encouragement: "Deja que la Verdad guíe cada decisión." },
-            { id: 37, title: "Acuerdo en Oración", description: "Invita a tu pareja a orar juntos diariamente.", verse: "Mateo 18:19", encouragement: "La oración en pareja es invencible." },
-            { id: 38, title: "Cumplir Sueños", description: "Traza un plan para cumplir un anhelo personal de tu pareja.", verse: "Salmos 37:4", encouragement: "Sé el instrumento que Dios usa para bendecir sueños." },
-            { id: 39, title: "Perdurar", description: "Escribe una carta de compromiso de amor incondicional hasta el final.", verse: "1 Corintios 13:8", encouragement: "El amor de Dios nunca falla." },
-            { id: 40, title: "El Pacto", description: "Renueva tu pacto matrimonial ante Dios con entrega total.", verse: "Rut 1:16", encouragement: "¡Llegaste a la meta! Dios será tu guía cada nuevo amanecer." }
+            { id: 1, title: "Paciencia", description: "No digas nada negativo a tu cónyuge hoy. Si surge la tentación, elige no decir nada.", verse: "1 Corintios 13:4", encouragement: "La paciencia es el amor en reposo. Dios te dará la calma necesaria." },
+            { id: 2, title: "Amabilidad", description: "Realiza un gesto inesperado de amabilidad hacia tu pareja hoy.", verse: "Efesios 4:32", encouragement: "Ser amable es reflejar el corazón de Cristo. Un pequeño detalle puede transformar un corazón herido." },
+            { id: 3, title: "Inversión", description: "Cómprale algo que diga: 'Hoy estuve pensando en ti'. No importa el precio.", verse: "Romanos 12:10", encouragement: "El amor invierte. Dios nos dio lo más valioso; hoy tú siembras valor en tu cónyuge." },
+            { id: 4, title: "Contacto", description: "Llama o escribe a tu pareja solo para preguntar cómo está, sin pedir nada.", verse: "Salmos 139:17", encouragement: "Tu interés genuino es un bálsamo. Recuerda que Dios te cuida con ese mismo detalle." },
+            { id: 5, title: "Humildad", description: "Pide a tu pareja que te diga tres cosas que le incomodan de ti. Escucha sin defenderte.", verse: "Proverbios 27:14", encouragement: "La humildad es la llave de la paz. Dios defiende tu hogar cuando bajas tus escudos de orgullo." },
+            { id: 6, title: "Ira", description: "Frente a un momento difícil hoy, decide reaccionar con amor y calma en lugar de enojo.", verse: "Proverbios 16:32", encouragement: "Gobernar tu espíritu es una victoria divina. No permitas que el ruido le robe el lugar a Su paz." },
+            { id: 7, title: "Positivismo", description: "Escribe cualidades positivas de tu cónyuge y elogia una de ellas hoy mismo.", verse: "1 Corintios 13:7", encouragement: "Enfocarte en lo bueno es un acto de fe. Dios ve tu potencial, haz lo mismo con tu amor." },
+            { id: 8, title: "Sin Celos", description: "Celebra un logro o éxito de tu cónyuge hoy con total alegría.", verse: "1 Corintios 13:4", encouragement: "El amor no tiene envidia. Al alegrarte por el otro, el Reino de Dios crece en tu casa." },
+            { id: 9, title: "El Saludo", description: "Saluda a tu pareja con una sonrisa y entusiasmo especial al verla.", verse: "1 Pedro 5:14", encouragement: "Tu hogar debe ser el refugio más dulce. Haz que tu abrazo sea el lugar más seguro." },
+            { id: 10, title: "Incondicional", description: "Haz una tarea doméstica pesada o algo fuera de lo común por pura decisión.", verse: "Romanos 5:8", encouragement: "Cristo nos sirvió sin méritos. Hoy tú sirves por pura decisión de amar." },
+            { id: 11, title: "Valor", description: "Haz un gesto que diga 'Te valoro' (un masaje, preparar su café favorito).", verse: "Efesios 5:28", encouragement: "Tu pareja es un regalo del cielo. Cuida ese tesoro como si fuera de cristal sagrado." },
+            { id: 12, title: "Ceder", description: "Cede hoy en una decisión o preferencia. Pon la alegría del otro primero.", verse: "Filipenses 2:4", encouragement: "Ceder no es perder, es ganar armonía. El que se humilla será exaltado por Dios." },
+            { id: 13, title: "Pelea Limpia", description: "Acuerden hoy no usar palabras hirientes ni sacar el pasado en discusiones.", verse: "Marcos 3:25", encouragement: "La unidad es poder. No dejes que el enemigo use tu lengua para destruir tu altar." },
+            { id: 14, title: "Deleite", description: "Deja tu celular o trabajo para pasar tiempo de calidad real con tu pareja.", verse: "Eclesiastés 9:9", encouragement: "Dios quiere que goces la vida con tu amor. La presencia es el regalo más caro." },
+            { id: 15, title: "Honor", description: "Habla bien de tu pareja frente a otros o demuéstrale honor en privado.", verse: "1 Pedro 3:7", encouragement: "Honrar a tu cónyuge es honrar el diseño de Dios. El respeto es el suelo donde crece el amor." },
+            { id: 16, title: "Intercesión", description: "Ora profundamente por tres áreas de la vida de tu pareja hoy.", verse: "3 Juan 1:2", encouragement: "Tu oración es el arma más poderosa. Eres el intercesor principal de tu hogar." },
+            { id: 17, title: "Seguridad", description: "Crea un espacio de confianza donde tu pareja pueda contarte un temor.", verse: "1 Corintios 13:7", encouragement: "Sé el refugio emocional. Dios te usa para sanar las heridas del pasado de tu pareja." },
+            { id: 18, title: "Comprensión", description: "Dedica 20 minutos a escuchar activamente sin interrumpir ni juzgar.", verse: "Proverbios 24:3", encouragement: "Con sabiduría se edifica la casa. Entender antes que ser entendido es el secreto." },
+            { id: 19, title: "Fuente", description: "Reflexiona hoy en que tu capacidad de amar viene solo de Dios.", verse: "1 Juan 4:7", encouragement: "No intentes amar con tus fuerzas, se acabarán. Usa el amor que Dios derrama en ti." },
+            { id: 20, title: "Roca", description: "Confiesa hoy que Cristo es el centro y salvador de tu matrimonio.", verse: "Romanos 5:6", encouragement: "Sobre esta roca nada prevalecerá. Si Jesús guía, la tormenta pasará." },
+            { id: 21, title: "Palabra", description: "Lean juntos un capítulo corto de la Biblia hoy.", verse: "Isaías 58:11", encouragement: "Su Palabra es lámpara. Dejen que la Verdad limpie el ambiente de su hogar." },
+            { id: 22, title: "Pacto", description: "Dile: 'Elijo amarte aun si hoy no siento hacerlo'. El amor es voluntad.", verse: "Oseas 2:20", encouragement: "La fidelidad de Dios no depende de nosotros. Nuestra fidelidad es un reflejo de Su carácter." },
+            { id: 23, title: "Vallas", description: "Identifica y quita algo que esté robando tiempo o atención a tu pareja.", verse: "1 Corintios 13:7", encouragement: "Protege tu jardín. No dejes que las zorras pequeñas echen a perder tu fruto." },
+            { id: 24, title: "Pureza", description: "Decide hoy cerrar puertas a ojos o pensamientos impuros que no sean tu pareja.", verse: "1 Juan 2:17", encouragement: "Un corazón íntegro ve a Dios. Tu pureza protege la unción de tu matrimonio." },
+            { id: 25, title: "Perdón", description: "Suelto hoy esa queja o herida que guardaba. Elijo perdonar.", verse: "2 Corintios 2:10", encouragement: "El perdón te libera a ti primero. Suelta la carga y deja que Dios sane." },
+            { id: 26, title: "Confesión", description: "Pide perdón a tu pareja por un error reciente con total humildad.", verse: "Romanos 2:1", encouragement: "La luz disipa las tinieblas. Reconocer errores abre caminos de restauración." },
+            { id: 27, title: "Aliento", description: "Elogia el esfuerzo de tu pareja en lugar de notar lo que falta.", verse: "Salmos 25:20", encouragement: "Sé el mayor animador de tu amor. Tus palabras construyen el futuro de tu casa." },
+            { id: 28, title: "Sacrificio", description: "Haz un sacrificio personal de tiempo o dinero para bendecir al otro.", verse: "1 Juan 3:16", encouragement: "El sacrificio es la medida del amor. Dios ve tu entrega y la multiplicará." },
+            { id: 29, title: "Motivación", description: "Sirve hoy con alegría, como si lo hicieras para el mismo Dios.", verse: "Efesios 6:7", encouragement: "Tu servicio es adoración. Al lavar o cocinar, estás adorando al Rey." },
+            { id: 30, title: "Unidad", description: "Pidan a Dios juntos por la visión de su futuro.", verse: "Juan 17:11", encouragement: "Un hogar dividido cae. Busquen la mente de Cristo para caminar en un solo sentido." },
+            { id: 31, title: "Prioridad", description: "Pon tu matrimonio por encima de hijos, padres o trabajo hoy.", verse: "Génesis 2:24", encouragement: "Ustedes son una sola carne. El orden de Dios trae bendición sobrenatural." },
+            { id: 32, title: "Intimidad", description: "Busca un momento de romance y ternura pura hoy.", verse: "1 Corintios 7:3", encouragement: "La intimidad es un regalo sagrado. Cultiva el deleite que Dios diseñó para ustedes." },
+            { id: 33, title: "Consejo", description: "No tomes una decisión hoy sin consultar la opinión de tu pareja.", verse: "Eclesiastés 4:11", encouragement: "La sabiduría del otro es tu complemento perfecto." },
+            { id: 34, title: "Elogio", description: "Elogia una virtud espiritual que veas en tu cónyuge.", verse: "1 Corintios 13:6", encouragement: "Celebra el carácter. Al notar lo que Dios hace en el otro, invitas Su presencia." },
+            { id: 35, title: "Mentores", description: "Busca o agradece hoy por consejos sabios de personas piadosas.", verse: "Proverbios 15:22", encouragement: "Nadie es una isla. Rodéate de matrimonios que amen a Dios." },
+            { id: 36, title: "Luz", description: "Decidan hoy leer la Palabra cada mañana, aunque sea un versículo.", verse: "Salmos 119:105", encouragement: "Donde hay Luz, el enemigo no tiene donde esconderse. Guíen su casa con Verdad." },
+            { id: 37, title: "Acuerdo", description: "Oren de la mano hoy por una necesidad urgente.", verse: "Mateo 18:19", encouragement: "El poder del acuerdo desata milagros. Dios está ahí cuando dos se ponen de acuerdo." },
+            { id: 38, title: "Anhelos", description: "Haz algo hoy para acercar a tu pareja a uno de sus sueños.", verse: "Salmos 37:4", encouragement: "Sé el viento bajo sus alas. Dios cumple deseos del corazón a través de ti." },
+            { id: 39, title: "Eternidad", description: "Escribe tu carta de compromiso eterno hoy.", verse: "1 Corintios 13:8", encouragement: "El amor de Dios no falla. Tu pacto es un reflejo de la eternidad." },
+            { id: 40, title: "Pacto", description: "Renueven sus votos con una oración o acto simbólico hoy.", verse: "Rut 1:16", encouragement: "¡Has llegado a la meta! Pero el reto de amar apenas comienza. Dios los bendiga." }
         ];
 
         let completedDays = JSON.parse(localStorage.getItem('amor_reto_completed')) || [];
         let activeDayId = 1;
+        let userName = localStorage.getItem('amor_reto_user_name');
+        let startDate = localStorage.getItem('amor_reto_start_date');
 
-        const grid = document.getElementById('day-grid');
-        const activeLabel = document.getElementById('active-day-label');
-        const activeTitle = document.getElementById('active-day-title');
-        const activeDesc = document.getElementById('active-day-desc');
-        const activeEncouragement = document.getElementById('active-day-encouragement');
-        const activeVerse = document.getElementById('active-day-verse');
-        const toggleBtn = document.getElementById('toggle-btn');
-        const progressCircle = document.getElementById('progress-circle');
-        const progressText = document.getElementById('progress-text');
-        const modal = document.getElementById('celebration-modal');
+        function init() {
+            if (!userName) {
+                document.getElementById('welcome-screen').classList.remove('hidden');
+            } else {
+                startApp();
+            }
+        }
 
-        function init() { renderGrid(); updateChallenge(); updateProgress(); }
+        function handleStartReto() {
+            const input = document.getElementById('user-name-field').value.trim();
+            if (input.length >= 3) {
+                userName = input;
+                startDate = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+                localStorage.setItem('amor_reto_user_name', userName);
+                localStorage.setItem('amor_reto_start_date', startDate);
+                document.getElementById('welcome-screen').classList.add('hidden');
+                startApp();
+            }
+        }
+
+        function startApp() {
+            const app = document.getElementById('app-content');
+            app.classList.remove('opacity-0');
+            document.getElementById('nav-user-welcome').innerText = `¡BENDICIONES, ${userName.toUpperCase()}!`;
+            document.getElementById('cert-final-name').innerText = userName;
+            document.getElementById('cert-final-date').innerText = startDate;
+            
+            renderGrid();
+            updateChallenge();
+            updateProgress();
+        }
 
         function renderGrid() {
+            const grid = document.getElementById('day-selector-grid');
             grid.innerHTML = '';
             challenges.forEach(day => {
                 const btn = document.createElement('button');
                 btn.innerText = day.id;
-                btn.className = `h-11 rounded-xl text-sm font-bold transition-all relative ${activeDayId === day.id ? 'ring-2 ring-rose-500 ring-offset-2 scale-105 shadow-md shadow-rose-100' : ''} ${completedDays.includes(day.id) ? 'bg-rose-100 text-rose-700' : 'bg-slate-50 text-slate-400 hover:bg-rose-50'}`;
-                if(completedDays.includes(day.id)) btn.innerHTML += `<span class="absolute -top-1 -right-1 bg-green-500 rounded-full w-4 h-4 flex items-center justify-center border-2 border-white"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></span>`;
+                btn.className = `h-12 rounded-2xl text-sm font-black transition-all relative ${
+                    activeDayId === day.id ? 'bg-rose-600 text-white scale-110 shadow-lg' : 
+                    completedDays.includes(day.id) ? 'bg-rose-100 text-rose-700' : 'bg-slate-50 text-slate-300'
+                }`;
+                if(completedDays.includes(day.id)) {
+                    btn.innerHTML += `<div class="absolute -top-1 -right-1 bg-green-500 rounded-full w-4 h-4 flex items-center justify-center border-2 border-white shadow-sm"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
+                }
                 btn.onclick = () => { activeDayId = day.id; updateChallenge(); renderGrid(); };
                 grid.appendChild(btn);
             });
@@ -149,36 +318,60 @@
 
         function updateChallenge() {
             const data = challenges.find(c => c.id === activeDayId);
-            activeLabel.innerText = `Día ${data.id}`;
-            activeTitle.innerText = data.title;
-            activeDesc.innerText = data.description;
-            activeEncouragement.innerText = data.encouragement;
-            activeVerse.innerText = data.verse;
-            toggleBtn.innerText = completedDays.includes(activeDayId) ? "¡Hecho con Fe!" : "Marcar como Hecho";
-            toggleBtn.className = completedDays.includes(activeDayId) ? "bg-green-500 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg" : "bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-rose-200";
+            const card = document.getElementById('day-card');
+            card.classList.remove('fade-in');
+            void card.offsetWidth; 
+            card.classList.add('fade-in');
+
+            document.getElementById('current-day-badge').innerText = `DÍA ${data.id}`;
+            document.getElementById('current-day-title').innerText = data.title;
+            document.getElementById('current-day-desc').innerText = data.description;
+            document.getElementById('current-day-faith').innerText = data.encouragement;
+            document.getElementById('current-day-verse').innerText = data.verse;
+
+            const toggleBtn = document.getElementById('main-toggle-btn');
+            if (completedDays.includes(activeDayId)) {
+                toggleBtn.innerText = "¡Hecho con Fe!";
+                toggleBtn.className = "bg-green-600 text-white px-10 py-5 rounded-3xl font-black shadow-xl transition-all flex items-center gap-3 text-lg";
+            } else {
+                toggleBtn.innerText = "Marcar como Hecho";
+                toggleBtn.className = "bg-rose-600 hover:bg-rose-700 text-white px-10 py-5 rounded-3xl font-black shadow-xl shadow-rose-200 transition-all flex items-center gap-3 text-lg";
+            }
         }
 
         function updateProgress() {
             const percentage = Math.round((completedDays.length / challenges.length) * 100);
-            progressText.innerText = `${percentage}%`;
-            const circumference = 2 * Math.PI * 40;
-            progressCircle.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+            document.getElementById('progress-percent').innerText = `${percentage}%`;
+            document.getElementById('completed-count').innerText = completedDays.length;
+            
+            const circumference = 263.89;
+            const offset = circumference - (percentage / 100) * circumference;
+            document.getElementById('progress-ring').style.strokeDashoffset = offset;
+
             if (completedDays.length === challenges.length) {
-                document.getElementById('celebration-text').innerText = "¡Felicidades por tu valentía! Que el Señor colme tu hogar de paz y bendición. ¡Sigue adelante, que el amor nunca deja de ser!";
-                modal.classList.remove('hidden');
+                document.getElementById('unlock-cert-area').classList.remove('hidden');
+                document.getElementById('celebration-msg').innerText = `¡Felicidades, ${userName}! Has culminado los 40 días de este pacto sagrado.`;
+                document.getElementById('final-modal').classList.remove('hidden');
             }
         }
 
-        toggleBtn.onclick = () => {
-            if (completedDays.includes(activeDayId)) completedDays = completedDays.filter(id => id !== activeDayId);
-            else completedDays.push(activeDayId);
+        document.getElementById('main-toggle-btn').onclick = () => {
+            if (completedDays.includes(activeDayId)) {
+                completedDays = completedDays.filter(id => id !== activeDayId);
+            } else {
+                completedDays.push(activeDayId);
+            }
             localStorage.setItem('amor_reto_completed', JSON.stringify(completedDays));
             renderGrid(); updateChallenge(); updateProgress();
         };
 
-        document.getElementById('prev-btn').onclick = () => { if (activeDayId > 1) { activeDayId--; renderGrid(); updateChallenge(); } };
-        document.getElementById('next-btn').onclick = () => { if (activeDayId < 40) { activeDayId++; renderGrid(); updateChallenge(); } };
-        function closeModal() { modal.classList.add('hidden'); }
+        document.getElementById('nav-prev').onclick = () => { if(activeDayId > 1) { activeDayId--; renderGrid(); updateChallenge(); } };
+        document.getElementById('nav-next').onclick = () => { if(activeDayId < 40) { activeDayId++; renderGrid(); updateChallenge(); } };
+        
+        function handleOpenCertificate() { document.getElementById('certificate-overlay').classList.remove('hidden'); }
+        function handleCloseCertificate() { document.getElementById('certificate-overlay').classList.add('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
         init();
     </script>
 </body>
