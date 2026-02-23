@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corazón en Gratitud - Diario de Fe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        #reto-amor-container { font-family: 'Inter', sans-serif; line-height: 1.5; }
+        .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        @keyframes heart-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .animate-heart { animation: heart-beat 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-rose-50">
+    <div id="reto-amor-container" class="text-slate-800 pb-20">
+        <nav class="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm">
+            <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="bg-rose-500 p-2 rounded-xl text-white shadow-md shadow-rose-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-black text-rose-900 leading-none">Corazón en Gratitud</h1>
+                        <p class="text-[10px] sm:text-xs font-bold text-rose-400 uppercase tracking-widest mt-1">El Diario de Su Gracia</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div id="progress-text" class="text-sm font-black text-rose-900 hidden sm:block">0%</div>
+                    <div class="relative w-12 h-12">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle class="text-rose-100 stroke-current" stroke-width="10" fill="transparent" r="40" cx="50" cy="50"/>
+                            <circle id="progress-circle" class="text-rose-500 stroke-current progress-ring__circle" stroke-width="10" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <aside class="lg:col-span-4 order-2 lg:order-1">
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
+                    <h2 class="font-bold text-rose-900 mb-6">40 Días de Bendición</h2>
+                    <div id="day-grid" class="grid grid-cols-5 gap-2"></div>
+                </div>
+            </aside>
+
+            <section class="lg:col-span-8 order-1 lg:order-2">
+                <div id="challenge-card" class="bg-white rounded-[2rem] p-8 shadow-md border border-rose-100 relative overflow-hidden min-h-[500px] flex flex-col">
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div id="active-day-label" class="inline-block bg-rose-100 text-rose-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">Día 1</div>
+                        <h2 id="active-day-title" class="text-4xl font-black text-rose-900 mb-6 tracking-tight"></h2>
+                        <div class="bg-rose-50 rounded-2xl p-6 mb-4 border border-rose-100/50"><p id="active-day-desc" class="text-lg text-slate-700"></p></div>
+                        <div class="bg-amber-50 rounded-2xl p-6 mb-8 border border-amber-100 italic text-slate-700 shadow-inner"><p id="active-day-encouragement"></p></div>
+                        <div class="flex flex-wrap items-center justify-between gap-4 mt-auto">
+                            <span id="active-day-verse" class="text-rose-500 font-bold italic"></span>
+                            <button id="toggle-btn" class="bg-rose-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all active:scale-95">Marcar como Hecho</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="prev-btn" class="p-4 bg-white rounded-2xl border border-rose-100 font-bold">Anterior</button>
+                    <button id="next-btn" class="p-4 bg-white rounded-2xl border border-rose-100 font-bold">Siguiente</button>
+                </div>
+            </section>
+        </main>
+
+        <div id="celebration-modal" class="fixed inset-0 z-[100] bg-rose-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-[3rem] p-8 max-w-lg w-full text-center shadow-2xl relative">
+                <h3 class="text-3xl font-black text-rose-900 mb-4">¡Reto Completado!</h3>
+                <p id="celebration-text" class="text-slate-600 mb-8"></p>
+                <button onclick="closeModal()" class="w-full bg-rose-600 text-white py-4 rounded-2xl font-bold">Amén, gracias Señor.</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const challenges = [
+            { id: 1, title: "Paciencia", description: "No digas nada negativo a tu cónyuge. Si surge la tentación, elige no decir nada.", verse: "1 Corintios 13:4", encouragement: "La paciencia es el amor en reposo. Dios te dará la calma cuando sientas que vas a estallar." },
+            { id: 2, title: "Amabilidad", description: "Realiza al menos un gesto inesperado de amabilidad además de no decir nada negativo.", verse: "Efesios 4:32", encouragement: "Ser amable es reflejar el corazón de Cristo. Un pequeño acto hoy puede sanar una herida de ayer." },
+            { id: 3, title: "Inversión", description: "Cómprale algo que le comunique: 'Hoy estuve pensando en ti'.", verse: "Romanos 12:10", encouragement: "El amor invierte tiempo y energía. Hoy tú siembras en tu matrimonio." },
+            { id: 4, title: "Contacto", description: "Ponte en contacto con tu cónyuge sin otra intención que preguntar cómo está.", verse: "Salmos 139:17", encouragement: "Tu interés genuino es un bálsamo. Recuerda que Dios está pendiente de cada uno de tus suspiros." },
+            { id: 5, title: "Humildad", description: "Pide que te diga tres cosas que le incomodan de ti. Escucha sin justificarte.", verse: "Proverbios 27:14", encouragement: "La humildad abre puertas que el orgullo cierra. Dios defiende tu hogar cuando bajas tus defensas." },
+            { id: 6, title: "Control de la Ira", description: "Frente a las circunstancias difíciles, decide reaccionar con amor en lugar de irritación.", verse: "Proverbios 16:32", encouragement: "Gobernar tu espíritu es una victoria espiritual. No dejes que el enojo le robe el lugar al Espíritu Santo." },
+            { id: 7, title: "Atributos Positivos", description: "Escribe cualidades positivas de tu cónyuge y elogia una hoy mismo.", verse: "1 Corintios 13", encouragement: "Enfocarte en lo bueno es un acto de fe. Dios ve el potencial en ti, haz lo mismo con tu pareja." },
+            { id: 8, title: "Sin Celos", description: "Celebra los éxitos de tu cónyuge y quema la lista de atributos negativos.", verse: "1 Corintios 13", encouragement: "Al quemar lo negativo, liberas espacio para que Dios escriba una nueva historia." },
+            { id: 9, title: "El Saludo", description: "Saluda a tu cónyuge con una sonrisa y entusiasmo de forma especial.", verse: "1 Pedro 5:14", encouragement: "Haz que tu hogar sea el lugar donde más deseen estar." },
+            { id: 10, title: "Amor Incondicional", description: "Haz algo fuera de lo común para servirle (lavar el auto, limpiar la cocina) por pura decisión.", verse: "Romanos 5:8", encouragement: "Amar sin condiciones es la forma más pura de imitar a Dios." },
+            { id: 11, title: "Valorar", description: "Realiza un gesto que diga 'Te Valoro' con una sonrisa genuina.", verse: "Efesios 5:28", encouragement: "Tu pareja es un regalo del cielo. Valórala hoy como el tesoro que Dios puso en tus manos." },
+            { id: 12, title: "Ceder", description: "Decide de buen modo ceder en un área de desacuerdo. Pon sus preferencias primero.", verse: "Filipenses 2:4", encouragement: "Ceder no es perder, es ganar paz. El que se humilla será exaltado por la gracia del Señor." },
+            { id: 13, title: "Pelear Limpio", description: "Establece reglas saludables para disentir con dignidad y respeto.", verse: "Marcos 3:25", encouragement: "La unidad es poder. Protege la paz de tu hogar como un guerrero de Dios." },
+            { id: 14, title: "Deleite", description: "Deja de lado una actividad habitual para pasar tiempo de calidad juntos.", verse: "Eclesiastés 9:9", encouragement: "Dios creó el matrimonio para el gozo. Disfruta la vida con la persona que Él eligió para ti." },
+            { id: 15, title: "Honor", description: "Demuestra respeto y honor de una manera especial hoy.", verse: "1 Pedro 3:7", encouragement: "Honrar a tu cónyuge es honrar el diseño de Dios." },
+            { id: 16, title: "Intercesión", description: "Ora específicamente por tres áreas de la vida de tu pareja.", verse: "3 Juan 1:2", encouragement: "La oración mueve la mano de Dios. Eres el intercesor principal de tu matrimonio." },
+            { id: 17, title: "Intimidad", description: "Protege los secretos de tu cónyuge y escúchalo hasta que se sienta seguro.", verse: "1 Corintios 13", encouragement: "Sé el refugio que Dios usa para consolar a tu pareja." },
+            { id: 18, title: "Comprensión", description: "Prepara una cena especial en casa para conocer mejor los anhelos de tu pareja.", verse: "Proverbios 24:3", encouragement: "Con sabiduría se edifica la casa." },
+            { id: 19, title: "Amor de Dios", description: "Reflexiona sobre cómo el amor de Dios es tu fuente inagotable.", verse: "1 Juan 4:7", encouragement: "Llénate del amor de Dios para que desborde hacia tu matrimonio." },
+            { id: 20, title: "Jesucristo", description: "Confía en Cristo como el salvador y centro de tu unión.", verse: "Romanos 5:6", encouragement: "Con Jesús en la barca, ninguna tormenta podrá hundir tu matrimonio." },
+            { id: 21, title: "Saciedad en Dios", description: "Aparta tiempo para la lectura bíblica y oración personal.", verse: "Isaías 58:11", encouragement: "Tu plenitud viene de Dios, no de tu pareja." },
+            { id: 22, title: "Fidelidad", description: "Comprométete a amar incluso si hoy no te sientes correspondido.", verse: "Oseas 2:20", encouragement: "La fidelidad es una decisión, no un sentimiento." },
+            { id: 23, title: "Protección", description: "Identifica y quita cualquier influencia externa dañina para la relación.", verse: "1 Corintios 13:7", encouragement: "Pon una valla de oración alrededor de tu hogar." },
+            { id: 24, title: "Contra la Lujuria", description: "Elimina cualquier distracción que compita con tu cónyuge.", verse: "1 Juan 2:17", encouragement: "Pide a Dios un corazón íntegro." },
+            { id: 25, title: "Perdón", description: "Elige perdonar hoy cualquier deuda o herida del pasado.", verse: "2 Corintios 2:10", encouragement: "El perdón te libera a ti. Dios ya te perdonó; extiende esa gracia." },
+            { id: 26, title: "Responsabilidad", description: "Confiésale tus faltas a tu pareja con humildad pidiendo perdón.", verse: "Romanos 2:1", encouragement: "La confesión trae sanidad." },
+            { id: 27, title: "Aliento", description: "Sustituye las expectativas poco realistas por palabras que edifiquen.", verse: "Salmos 25:20", encouragement: "Tus palabras tienen poder de vida." },
+            { id: 28, title: "Sacrificio", description: "Haz un sacrificio personal para bendecir a tu pareja en su mayor necesidad.", verse: "1 Juan 3:16", encouragement: "Dios ve tu entrega y multiplicará tu bendición." },
+            { id: 29, title: "Motivación", description: "Sirve con alegría y di 'Te amo' de manera tangible.", verse: "Efesios 6:7", encouragement: "Tu servicio es un acto de adoración." },
+            { id: 30, title: "Unidad", description: "Busca a Dios juntos para fortalecer el vínculo y resolver divisiones.", verse: "Juan 17:11", encouragement: "Cordón de tres dobleces no se rompe fácilmente." },
+            { id: 31, title: "Dejar y Unirse", description: "Reafirma que tu matrimonio es tu prioridad sobre toda otra relación.", verse: "Génesis 2:24", encouragement: "Estás diseñando un legado." },
+            { id: 32, title: "Sexualidad", description: "Busca la pureza y el deleite en la unión sagrada.", verse: "1 Corintios 7:3", encouragement: "La intimidad es un regalo sagrado." },
+            { id: 33, title: "Completar", description: "Incluye a tu pareja en tus decisiones y pide su consejo.", verse: "Eclesiastés 4:11", encouragement: "La sabiduría compartida es una doble bendición." },
+            { id: 34, title: "Celebrar la Piedad", description: "Elogia su carácter cristiano cuando haga lo correcto ante Dios.", verse: "1 Corintios 13:6", encouragement: "Celebrar su fe es la mejor manera de verla crecer." },
+            { id: 35, title: "Rendir Cuentas", description: "Busca sabiduría en mentores cristianos para tu matrimonio.", verse: "Proverbios 15:22", encouragement: "Rodéate de personas que amen a Dios." },
+            { id: 36, title: "Palabra de Dios", description: "Comprométete a leer la Biblia diariamente para guiar tu camino.", verse: "Salmos 119:105", encouragement: "Deja que la Verdad guíe cada decisión." },
+            { id: 37, title: "Acuerdo en Oración", description: "Invita a tu pareja a orar juntos diariamente.", verse: "Mateo 18:19", encouragement: "La oración en pareja es invencible." },
+            { id: 38, title: "Cumplir Sueños", description: "Traza un plan para cumplir un anhelo personal de tu pareja.", verse: "Salmos 37:4", encouragement: "Sé el instrumento que Dios usa para bendecir sueños." },
+            { id: 39, title: "Perdurar", description: "Escribe una carta de compromiso de amor incondicional hasta el final.", verse: "1 Corintios 13:8", encouragement: "El amor de Dios nunca falla." },
+            { id: 40, title: "El Pacto", description: "Renueva tu pacto matrimonial ante Dios con entrega total.", verse: "Rut 1:16", encouragement: "¡Llegaste a la meta! Dios será tu guía cada nuevo amanecer." }
+        ];
+
+        let completedDays = JSON.parse(localStorage.getItem('amor_reto_completed')) || [];
+        let activeDayId = 1;
+
+        const grid = document.getElementById('day-grid');
+        const activeLabel = document.getElementById('active-day-label');
+        const activeTitle = document.getElementById('active-day-title');
+        const activeDesc = document.getElementById('active-day-desc');
+        const activeEncouragement = document.getElementById('active-day-encouragement');
+        const activeVerse = document.getElementById('active-day-verse');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const progressCircle = document.getElementById('progress-circle');
+        const progressText = document.getElementById('progress-text');
+        const modal = document.getElementById('celebration-modal');
+
+        function init() { renderGrid(); updateChallenge(); updateProgress(); }
+
+        function renderGrid() {
+            grid.innerHTML = '';
+            challenges.forEach(day => {
+                const btn = document.createElement('button');
+                btn.innerText = day.id;
+                btn.className = `h-11 rounded-xl text-sm font-bold transition-all relative ${activeDayId === day.id ? 'ring-2 ring-rose-500 ring-offset-2 scale-105 shadow-md shadow-rose-100' : ''} ${completedDays.includes(day.id) ? 'bg-rose-100 text-rose-700' : 'bg-slate-50 text-slate-400 hover:bg-rose-50'}`;
+                if(completedDays.includes(day.id)) btn.innerHTML += `<span class="absolute -top-1 -right-1 bg-green-500 rounded-full w-4 h-4 flex items-center justify-center border-2 border-white"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></span>`;
+                btn.onclick = () => { activeDayId = day.id; updateChallenge(); renderGrid(); };
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateChallenge() {
+            const data = challenges.find(c => c.id === activeDayId);
+            activeLabel.innerText = `Día ${data.id}`;
+            activeTitle.innerText = data.title;
+            activeDesc.innerText = data.description;
+            activeEncouragement.innerText = data.encouragement;
+            activeVerse.innerText = data.verse;
+            toggleBtn.innerText = completedDays.includes(activeDayId) ? "¡Hecho con Fe!" : "Marcar como Hecho";
+            toggleBtn.className = completedDays.includes(activeDayId) ? "bg-green-500 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg" : "bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-rose-200";
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((completedDays.length / challenges.length) * 100);
+            progressText.innerText = `${percentage}%`;
+            const circumference = 2 * Math.PI * 40;
+            progressCircle.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+            if (completedDays.length === challenges.length) {
+                document.getElementById('celebration-text').innerText = "¡Felicidades por tu valentía! Que el Señor colme tu hogar de paz y bendición. ¡Sigue adelante, que el amor nunca deja de ser!";
+                modal.classList.remove('hidden');
+            }
+        }
+
+        toggleBtn.onclick = () => {
+            if (completedDays.includes(activeDayId)) completedDays = completedDays.filter(id => id !== activeDayId);
+            else completedDays.push(activeDayId);
+            localStorage.setItem('amor_reto_completed', JSON.stringify(completedDays));
+            renderGrid(); updateChallenge(); updateProgress();
+        };
+
+        document.getElementById('prev-btn').onclick = () => { if (activeDayId > 1) { activeDayId--; renderGrid(); updateChallenge(); } };
+        document.getElementById('next-btn').onclick = () => { if (activeDayId < 40) { activeDayId++; renderGrid(); updateChallenge(); } };
+        function closeModal() { modal.classList.add('hidden'); }
+        init();
+    </script>
+</body>
+</html>
